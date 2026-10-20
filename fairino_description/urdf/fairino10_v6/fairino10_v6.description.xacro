@@ -30,7 +30,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://fairino_description/meshes/fairino10_v6/visual/base_link.stl" />
+          <mesh filename="package://fairino_description/meshes/fairino10_v6/collision/base_link_collision.stl" />
         </geometry>
       </collision>
     </link>
@@ -64,7 +64,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://fairino_description/meshes/fairino10_v6/visual/shoulder_link.stl" />
+          <mesh filename="package://fairino_description/meshes/fairino10_v6/collision/shoulder_link_collision.stl" />
         </geometry>
       </collision>
     </link>
@@ -98,7 +98,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://fairino_description/meshes/fairino10_v6/visual/upperarm_link.stl" />
+          <mesh filename="package://fairino_description/meshes/fairino10_v6/collision/upperarm_link_collision.stl" />
         </geometry>
       </collision>
     </link>
@@ -132,7 +132,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://fairino_description/meshes/fairino10_v6/visual/forearm_link.stl" />
+          <mesh filename="package://fairino_description/meshes/fairino10_v6/collision/forearm_link_collision.stl" />
         </geometry>
       </collision>
     </link>
@@ -166,7 +166,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://fairino_description/meshes/fairino10_v6/visual/wrist1_link.stl" />
+          <mesh filename="package://fairino_description/meshes/fairino10_v6/collision/wrist1_link_collision.stl" />
         </geometry>
       </collision>
     </link>
@@ -200,7 +200,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://fairino_description/meshes/fairino10_v6/visual/wrist2_link.stl" />
+          <mesh filename="package://fairino_description/meshes/fairino10_v6/collision/wrist2_link_collision.stl" />
         </geometry>
       </collision>
     </link>
@@ -234,7 +234,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://fairino_description/meshes/fairino10_v6/visual/wrist3_link.stl" />
+          <mesh filename="package://fairino_description/meshes/fairino10_v6/collision/wrist3_link_collision.stl" />
         </geometry>
       </collision>
     </link>
