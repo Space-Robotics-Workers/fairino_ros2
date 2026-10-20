@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was artisanally crafted by Jacob Beck (jbeck@spaceroboticsworkers.com) -->
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="fairino10_v6_robot">
+  <!-- Declare arguments -->
+  <xacro:arg name="namespace" default="" />
+  <xacro:arg name="prefix" default="" />
+  <xacro:arg name="parent" default="world" />
+  <xacro:arg name="xyz" default="0 0 0" />
+  <xacro:arg name="rpy" default="0 0 0" />
+  <xacro:arg name="mode" default="mock" />
+  <xacro:arg name="control_yaml"
+    default="$(find fairino_custom_control)/config/fairino10_v6_control.yaml" />
+
+  <!-- Include required macros -->
+  <xacro:include filename="$(find fairino_description)/urdf/fairino10_v6/fairino10_v6.control.xacro" />
+  <xacro:include filename="$(find fairino_description)/urdf/fairino10_v6/fairino10_v6.description.xacro" />
+  <xacro:include filename="$(find fairino_description)/urdf/fairino10_v6/fairino10_v6.gazebo.xacro" />
+
+  <!-- Build robot -->
+  <link name="world" />
+
+  <xacro:fairino10_v6_description prefix="$(arg prefix)" parent="$(arg parent)">
+    <origin xyz="$(arg xyz)" rpy="$(arg rpy)" />
+  </xacro:fairino10_v6_description>
+
+  <xacro:fairino10_v6_control prefix="$(arg prefix)" mode="$(arg mode)" />
+
+  <xacro:property name="mode" value="$(arg mode)" /> <!-- Get arg as property for evaluation -->
+  <xacro:if value="${mode == 'gazebo'}">
+    <xacro:fairino10_v6_gazebo namespace="$(arg namespace)" control_yaml="$(arg control_yaml)" />
+  </xacro:if>
+</robot>
