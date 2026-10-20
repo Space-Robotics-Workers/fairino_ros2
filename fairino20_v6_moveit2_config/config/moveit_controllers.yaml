@@ -8,8 +8,6 @@ moveit_simple_controller_manager:
 
   fairino20_controller:
     type: FollowJointTrajectory
-    action_ns: follow_joint_trajectory
-    default: true
     joints:
       - j1
       - j2
