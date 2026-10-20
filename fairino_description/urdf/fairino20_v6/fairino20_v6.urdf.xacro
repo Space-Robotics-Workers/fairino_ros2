@@ -9,11 +9,12 @@
   <xacro:arg name="rpy" default="0 0 0" />
   <xacro:arg name="mode" default="mock" />
   <xacro:arg name="control_yaml"
-    default="$(find fairino_custom_control)/config/fairino20_v6_control.yaml" />
+    default="$(find fairino20_v6_moveit2_config)/config/ros2_controllers.yaml" />
 
   <!-- Include required macros -->
   <xacro:include filename="$(find fairino_description)/urdf/fairino20_v6/fairino20_v6.control.xacro" />
-  <xacro:include filename="$(find fairino_description)/urdf/fairino20_v6/fairino20_v6.description.xacro" />
+  <xacro:include
+    filename="$(find fairino_description)/urdf/fairino20_v6/fairino20_v6.description.xacro" />
   <xacro:include filename="$(find fairino_description)/urdf/fairino20_v6/fairino20_v6.gazebo.xacro" />
 
   <!-- Build robot -->
