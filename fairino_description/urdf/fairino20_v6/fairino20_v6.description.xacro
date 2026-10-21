@@ -113,7 +113,7 @@
       <parent link="${prefix}upperarm_link" />
       <child link="${prefix}forearm_link" />
       <axis xyz="0 0 1" />
-      <limit lower="-2.8274" upper="2.8274" effort="350" velocity="3.15" />
+      <limit lower="-2.8274" upper="2.8274" effort="400" velocity="3.15" />
       <calibration rising="0" falling="0" />
       <dynamics damping="0" friction="0" />
       <safety_controller soft_upper_limit="3.0543261" soft_lower_limit="-3.0543261"
@@ -148,7 +148,7 @@
       <parent link="${prefix}forearm_link" />
       <child link="${prefix}wrist1_link" />
       <axis xyz="0 0 1" />
-      <limit lower="-4.6251" upper="1.4835" effort="60" velocity="3.2" />
+      <limit lower="-4.6251" upper="1.4835" effort="100" velocity="3.2" />
       <calibration rising="0" falling="0" />
       <dynamics damping="0" friction="0" />
       <safety_controller soft_upper_limit="3.0543261" soft_lower_limit="-3.0543261"
@@ -183,7 +183,7 @@
       <parent link="${prefix}wrist1_link" />
       <child link="${prefix}wrist2_link" />
       <axis xyz="0 0 1" />
-      <limit lower="-3.0543" upper="3.0543" effort="60" velocity="3.2" />
+      <limit lower="-3.0543" upper="3.0543" effort="100" velocity="3.2" />
       <calibration rising="0" falling="0" />
       <dynamics damping="0" friction="0" />
       <safety_controller soft_upper_limit="3.0543261" soft_lower_limit="-3.0543261"
@@ -218,7 +218,7 @@
       <parent link="${prefix}wrist2_link" />
       <child link="${prefix}wrist3_link" />
       <axis xyz="0 0 1" />
-      <limit lower="-3.0543" upper="3.0543" effort="60" velocity="3.2" />
+      <limit lower="-3.0543" upper="3.0543" effort="100" velocity="3.2" />
       <calibration rising="0" falling="0" />
       <dynamics damping="0" friction="0" />
       <safety_controller soft_upper_limit="3.0543261" soft_lower_limit="-3.0543261"
