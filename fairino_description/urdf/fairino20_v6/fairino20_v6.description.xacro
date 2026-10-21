@@ -50,7 +50,7 @@
 
     <link name="${prefix}shoulder_link">
       <inertial>
-        <origin xyz="-0.00019 -0.03657 0.00568" rpy="0 0 0" />
+        <origin xyz="-0.00019 -0.03657 0.215" rpy="0 0 0" />
         <mass value="20.79" />
         <inertia ixx="0.11681303" ixy="0.000010684" ixz="0.00015198" iyy="0.09147711"
           iyz="0.00458985" izz="0.11321598" />
@@ -86,7 +86,7 @@
 
     <link name="${prefix}upperarm_link">
       <inertial>
-        <origin xyz="0.60525 0.00006 0.20294" rpy="0 0 0" />
+        <origin xyz="-0.60525 0.00006 0.20294" rpy="0 0 0" />
         <mass value="42.84" />
         <inertia ixx="0.21509702" ixy="0.00193218" ixz="0.11070934" iyy="8.34192406"
           iyz="0.00005317" izz="8.29611691" />
@@ -122,7 +122,7 @@
 
     <link name="${prefix}forearm_link">
       <inertial>
-        <origin xyz="0.26284 0.00022 0.04308" rpy="0 0 0" />
+        <origin xyz="-0.26284 0.00022 0.04308" rpy="0 0 0" />
         <mass value="9.88" />
         <inertia ixx="0.03036772" ixy="0.00023857" ixz="0.00627398" iyy="0.86016899"
           iyz="0.00000777" izz="0.85782697" />
@@ -157,7 +157,7 @@
 
     <link name="${prefix}wrist1_link">
       <inertial>
-        <origin xyz="0.00023 -0.00228 0.01842" rpy="0 0 0" />
+        <origin xyz="0.00023 -0.00228 0.166" rpy="0 0 0" />
         <mass value="4.64" />
         <inertia ixx="0.00933772" ixy="0.00003325" ixz="0.00005007" iyy="0.00926897"
           iyz="0.00021949" izz="0.00774545" />
@@ -192,7 +192,7 @@
 
     <link name="${prefix}wrist2_link">
       <inertial>
-        <origin xyz="-0.00023 0.00228 0.01842" rpy="0 0 0" />
+        <origin xyz="-0.00023 0.00228 0.138" rpy="0 0 0" />
         <mass value="4.64" />
         <inertia ixx="0.00933772" ixy="0.00003325" ixz="-0.00005007" iyy="0.00926897"
           iyz="-0.00021949" izz="0.00774545" />
@@ -227,7 +227,7 @@
 
     <link name="${prefix}wrist3_link">
       <inertial>
-        <origin xyz="-0.00211 -0.00196 -0.02038" rpy="0 0 0" />
+        <origin xyz="-0.00211 -0.00196 0.102" rpy="0 0 0" />
         <mass value="0.6" />
         <inertia ixx="0.00071709" ixy="0.00000175" ixz="0.00000555" iyy="0.00071408"
           iyz="0.00000531" izz="0.00127558" />
