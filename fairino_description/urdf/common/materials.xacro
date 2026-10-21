@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was artisanally crafted by Jacob Beck (jbeck@spaceroboticsworkers.com) -->
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+  <!-- Define materials -->
+  <material name="white">
+    <color rgba="1 1 1 1" />
+  </material>
+  <material name="silver">
+    <color rgba="0.90 0.91 0.98 1" />
+  </material>
+</robot>
