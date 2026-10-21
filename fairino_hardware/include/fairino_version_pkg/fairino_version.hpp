@@ -57,8 +57,8 @@ class robot_version_thread:public rclcpp::Node{
 
 
     };
-#define CHN_VERSION
-//#define ENG_VERSION
+// #define CHN_VERSION
+#define ENG_VERSION
 /*用于ros2_control框架使用的宏定义*/
 #define POSITION_CONTROL_MODE 1
 #define TORQUE_CONTROL_MODE 2
