@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- This URDF was artisanally crafted by Jacob Beck (jbeck@spaceroboticsworkers.com) -->
 <robot xmlns:xacro="http://wiki.ros.org/xacro">
-  <xacro:macro name="fairino10_v6_control" params="prefix mode">
+  <xacro:macro name="fairino10_v6_ros2_control" params="prefix mode">
     <ros2_control name="${prefix}fairino10_v6_system" type="system">
       <!-- Load appropriate hardware plugin -->
       <hardware>
@@ -14,8 +14,7 @@
         </xacro:if>
 
         <xacro:if value="${mode == 'real'}">
-          <!-- TODO: Create control plugin -->
-          <plugin>fairino_custom_driver/FairinoDriver</plugin>
+          <plugin>fairino_hardware/FairinoHardwareInterface</plugin>
         </xacro:if>
       </hardware>
 
