@@ -2,8 +2,8 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include "sys/mman.h"
-#include <ament_index_cpp/get_package_share_directory.hpp>  
-#include <regex>                                            
+#include <ament_index_cpp/get_package_share_directory.hpp>
+#include <regex>
 #include <thread>
 #include <cstdlib>
 #include <ament_index_cpp/get_package_prefix.hpp>
@@ -110,13 +110,13 @@ robot_version_thread::robot_version_thread(const std::string node_name):rclcpp::
             tv.tv_sec  = 1;     // 1 秒
             tv.tv_usec = 0;
             setsockopt(_socketfd1, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
-            
+
             //开启keepalive
             if(0 != setKeepAlive(_socketfd1, 5, 3, 3)){
                 RCLCPP_ERROR(rclcpp::get_logger(LOGGER_NAME),msgout[msg_id(keep_alive_failed)]);
             }
         }
-        
+
           // 启动定时器：100ms 查询一次，成功后会 cancel + 退出
         _locktimer = this->create_wall_timer(
             std::chrono::milliseconds(100),
@@ -131,14 +131,14 @@ robot_version_thread::~robot_version_thread(){
      _robot_recv_exit.store(true);
 
  // 删除软链接
-   
+
     std::string lib_2_2 = libdir + "/libfairino.so.2.2";
     std::string lib_2 = libdir + "/libfairino.so.2";
 
     std::remove(lib_2_2.c_str());
     std::remove(lib_2.c_str());
 
-     
+
   if(_locktimer) _locktimer->cancel();
 
   if(_reconnect_thread.joinable())
@@ -209,7 +209,7 @@ void robot_version_thread::_try_to_reconnect(){
             /* 以3s的频率检查 */
             std::this_thread::sleep_for(std::chrono::seconds(3));
         }
-            
+
     };
 
     _reconnect_thread = std::thread(_reconnect_func);
@@ -217,7 +217,7 @@ void robot_version_thread::_try_to_reconnect(){
 }
 
 /**
- * @brief 
+ * @brief
  * @param idle_time 空闲idle_time后，开始发射探针
  * @param interval_time 发射首个探针后，如果interval_time内没有响应，再次发射探针
  * @param probe_times 一共会发射probe_times次探针
@@ -231,26 +231,26 @@ int robot_version_thread::setKeepAlive(int fd, int idle_time, int interval_time,
         RCLCPP_ERROR(rclcpp::get_logger(LOGGER_NAME),"setsockopt SO_KEEPALIVE: %s", strerror(errno));
         return -1;
     }
- 
+
     val = idle_time;
     if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPIDLE, &val, sizeof(val)) < 0) {
         RCLCPP_ERROR(rclcpp::get_logger(LOGGER_NAME),"setsockopt TCP_KEEPIDLE: %s\n", strerror(errno));
         return -1;
     }
- 
+
     val = interval_time;
     if (val == 0) val = 1;
     if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPINTVL, &val, sizeof(val)) < 0) {
         RCLCPP_ERROR(rclcpp::get_logger(LOGGER_NAME),"setsockopt TCP_KEEPINTVL: %s\n", strerror(errno));
         return -1;
     }
- 
+
     val = probe_times;
     if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPCNT, &val, sizeof(val)) < 0) {
         RCLCPP_ERROR(rclcpp::get_logger(LOGGER_NAME),"setsockopt TCP_KEEPCNT: %s\n", strerror(errno));
         return -1;
     }
- 
+
     return 0;
 }
 
@@ -277,7 +277,7 @@ void robot_version_thread::_state_recv_callback(){
         // RCLCPP_INFO(rclcpp::get_logger(LOGGER_NAME),msgout[msg_id(receive_command)]);
         std::string resp(recv_buff, recv_bytes);        // 用有效字节构造字符串
 
-        
+
         // 1) 停止定时器
         if (_locktimer) _locktimer->cancel();
 
@@ -293,15 +293,15 @@ void robot_version_thread::_state_recv_callback(){
 
         if (std::regex_search(resp, m, re) && m.size() >= 2) {
             ver = "v"+m[1].str();
-            RCLCPP_INFO(rclcpp::get_logger(LOGGER_NAME), 
-                    "%s %s", 
-                    msgout[msg_id(ver_robot)], 
-                    ver.c_str());   
+            RCLCPP_INFO(rclcpp::get_logger(LOGGER_NAME),
+                    "%s %s",
+                    msgout[msg_id(ver_robot)],
+                    ver.c_str());
         } else {
             // std::cout << "未匹配到版本字段，原始回复: " << resp << std::endl;
-            RCLCPP_ERROR(rclcpp::get_logger(LOGGER_NAME), 
-                    "%s %s", 
-                    msgout[msg_id(not_ver_robot)], 
+            RCLCPP_ERROR(rclcpp::get_logger(LOGGER_NAME),
+                    "%s %s",
+                    msgout[msg_id(not_ver_robot)],
                     resp.c_str());
         }
 
@@ -316,7 +316,7 @@ void robot_version_thread::_state_recv_callback(){
             {
                 try {
                     std::string so_prefix = ament_index_cpp::get_package_prefix(stringList[i]);
-                    
+
                     std::string so_libdir = so_prefix + "/lib";
                     std::string so_lib_2_2 = so_libdir + "/libfairino.so.2.2";
                     std::string so_lib_2 = so_libdir + "/libfairino.so.2";
@@ -332,12 +332,12 @@ void robot_version_thread::_state_recv_callback(){
             std::string local_setup =
                 ament_index_cpp::get_package_share_directory(pkg) + "/local_setup.bash";
 
-            
+
 
             // 2) 再拿 prefix/lib（用于固定 LD_LIBRARY_PATH，避免串库）
             std::string prefix = ament_index_cpp::get_package_prefix(pkg);
             libdir = prefix + "/lib";
-            
+
 
             // 原始库文件
             // ver 形如 "v3_9_8" 或 "v4_0_0"：
@@ -370,10 +370,10 @@ void robot_version_thread::_state_recv_callback(){
             std::string lib_2 = libdir + "/libfairino.so.2";
 
             // 创建软链接的命令
-            std::string symlink_cmd = 
+            std::string symlink_cmd =
                 "ln -sf " + target_lib + " " + lib_2_2 + " && "   // 将 libfairino.so.2.3.0 链接到 libfairino.so.2.2
                 "ln -sf " + lib_2_2 + " " + lib_2;  // 将 libfairino.so.2.2 链接到 libfairino.so.2
-            
+
             // 执行软链接创建命令
             std::system(symlink_cmd.c_str());
 
@@ -391,9 +391,9 @@ void robot_version_thread::_state_recv_callback(){
 
         } else {
             // std::cout << "包不存在: " << std::endl;
-            RCLCPP_ERROR(rclcpp::get_logger(LOGGER_NAME), 
-                    "%s %s %s", 
-                    msgout[msg_id(not_package)], 
+            RCLCPP_ERROR(rclcpp::get_logger(LOGGER_NAME),
+                    "%s %s %s",
+                    msgout[msg_id(not_package)],
                     pkg.c_str(),resp.c_str());
             return;
         }

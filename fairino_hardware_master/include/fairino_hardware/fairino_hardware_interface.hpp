@@ -29,16 +29,16 @@ public:
 
   FAIRINO_HARDWARE_PUBLIC
   hardware_interface::CallbackReturn on_activate(const rclcpp_lifecycle::State& previous_state) override;
-  
+
   FAIRINO_HARDWARE_PUBLIC
   hardware_interface::CallbackReturn on_deactivate(const rclcpp_lifecycle::State& previous_state) override;
-  
+
   FAIRINO_HARDWARE_PUBLIC
   std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
-  
+
   FAIRINO_HARDWARE_PUBLIC
   std::vector<hardware_interface::CommandInterface> export_command_interfaces() override;
-  
+
   // hardware_interface::return_type prepare_command_mode_switch(
   //   const std::vector<std::string> & start_interfaces,
   //   const std::vector<std::string> & stop_interfaces) override;
@@ -48,10 +48,10 @@ public:
 
   FAIRINO_HARDWARE_PUBLIC
   hardware_interface::return_type read(const rclcpp::Time & time, const rclcpp::Duration & period) override;
-  
+
   FAIRINO_HARDWARE_PUBLIC
   hardware_interface::return_type write(const rclcpp::Time & time, const rclcpp::Duration & period) override;
-  
+
 private:
   double _jnt_position_command[6];
   double _jnt_velocity_command[6];

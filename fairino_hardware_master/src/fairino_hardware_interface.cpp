@@ -7,7 +7,7 @@ hardware_interface::CallbackReturn FairinoHardwareInterface::on_init(const hardw
         return hardware_interface::CallbackReturn::ERROR;
     }
     info_ = sysinfo;//info_是父类中定义的变量
-    
+
     for (const hardware_interface::ComponentInfo& joint : info_.joints) {
 
         //指令部分
@@ -137,7 +137,7 @@ hardware_interface::CallbackReturn FairinoHardwareInterface::on_activate(const r
             _jnt_position_command[j] = jntpos.jPos[j]/180.0*M_PI;
         }
         RCLCPP_INFO(rclcpp::get_logger("FairinoHardwareInterface"),"初始指令位置: %f,%f,%f,%f,%f,%f",_jnt_position_command[0],\
-        _jnt_position_command[1],_jnt_position_command[2],_jnt_position_command[3],_jnt_position_command[4],_jnt_position_command[5]);    
+        _jnt_position_command[1],_jnt_position_command[2],_jnt_position_command[3],_jnt_position_command[4],_jnt_position_command[5]);
         RCLCPP_INFO(rclcpp::get_logger("FairinoHardwareInterface"), "机械臂硬件启动成功!");
         return hardware_interface::CallbackReturn::SUCCESS;
     }else{
@@ -207,7 +207,7 @@ hardware_interface::return_type FairinoHardwareInterface::write(const rclcpp::Ti
         RCLCPP_INFO(rclcpp::get_logger("FairinoHardwareInterface"), "指令发送错误:未识别当前所处控制模式");
         return hardware_interface::return_type::ERROR;
     }
- 
+
     return hardware_interface::return_type::OK;
 }
 
