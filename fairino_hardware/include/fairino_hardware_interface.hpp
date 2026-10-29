@@ -20,7 +20,8 @@
 
 namespace fairino_hardware
 {
-const std::string BUILD_VERSION = "3.9.7";
+const std::string BUILD_VERSION = "v3.9.7";
+const std::string DEFAULT_IP = "192.168.58.2";
 
 class FairinoHardwareInterface : public hardware_interface::SystemInterface
 {
@@ -65,6 +66,11 @@ public:
   /// Hardware is disabled
   FAIRINO_HARDWARE_PUBLIC
   hardware_interface::CallbackReturn on_deactivate(
+    const rclcpp_lifecycle::State & previous_state) override;
+
+  /// Handle error state
+  FAIRINO_HARDWARE_PUBLIC
+  hardware_interface::CallbackReturn on_error(
     const rclcpp_lifecycle::State & previous_state) override;
 
   /// Close communication and prepare for shutdown
