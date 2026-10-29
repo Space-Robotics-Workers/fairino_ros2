@@ -6,31 +6,43 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(angles REQUIRED)
+find_package(hardware_interface REQUIRED)
+find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
 
-# 生成可执行文件：名字就是 ros2_cmd_server
-add_executable(ros2_cmd_server
-  src/fairino_version_node.cpp
-  src/fairino_version.cpp
-  
+add_library(fairino_hardware SHARED
+  ./src/fairino_hardware_interface.cpp
 )
 
-ament_target_dependencies(ros2_cmd_server
-  rclcpp
-  ament_index_cpp
-)
-
-target_include_directories(ros2_cmd_server PUBLIC
+target_include_directories(fairino_hardware PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
+  $<INSTALL_INTERFACE:include/fairino_hardware>
 )
 
-install(TARGETS ros2_cmd_server
-  DESTINATION lib/${PROJECT_NAME}
+target_link_libraries(fairino_hardware
+  "-Wl,-rpath,$ORIGIN"
+  ${CMAKE_CURRENT_SOURCE_DIR}/lib/libfairino.so.2.3.7
+  angles::angles
+  hardware_interface::hardware_interface
+  hardware_interface::mock_components
+  pluginlib::pluginlib
+  rclcpp::rclcpp
+  rclcpp_lifecycle::rclcpp_lifecycle
 )
 
-install(DIRECTORY include/
-  DESTINATION include
+pluginlib_export_plugin_description_file(hardware_interface fairino_hardware.xml)
+
+install(TARGETS fairino_hardware
+  EXPORT fairino_hardware
+  ARCHIVE DESTINATION lib/${PROJECT_NAME}
+  LIBRARY DESTINATION lib/${PROJECT_NAME}
 )
+
+ament_export_targets(fairino_hardware HAS_LIBRARY_TARGET)
+ament_export_dependencies(ament_cmake rclcpp hardware_interface pluginlib rclcpp_lifecycle)
 
 ament_package()

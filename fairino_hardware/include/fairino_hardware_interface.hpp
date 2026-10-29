@@ -1,7 +1,7 @@
 // Copyright (c) 2026, Space Robotics Workers S.L.
 
-#ifndef FR_HARDWARE_INTERFACE_
-#define FR_HARDWARE_INTERFACE_
+#ifndef FAIRINO_HARDWARE_INTERFACE_HPP_
+#define FAIRINO_HARDWARE_INTERFACE_HPP_
 
 // Standard library
 #include <vector>
@@ -15,52 +15,65 @@
 #include <rclcpp/rclcpp.hpp>
 
 // Project
-#include "libfairino/include/robot.h"
+#include "libfairino2.3.7/robot.h"
 #include "visibility_control.h"
 
 namespace fairino_hardware
 {
-const auto LOGGER = rclcpp::get_logger("fairino_hardware_interface");
+const std::string BUILD_VERSION = "3.9.7";
 
 class FairinoHardwareInterface : public hardware_interface::SystemInterface
 {
 public:
   RCLCPP_SHARED_PTR_DEFINITIONS(FairinoHardwareInterface)
 
+  /// Initialize all member variables and process the parameters from hardware info
   FAIRINO_HARDWARE_PUBLIC
   hardware_interface::CallbackReturn on_init(
-    const hardware_interface::HardwareInfo & info) override;
+    const hardware_interface::HardwareComponentInterfaceParams & params) override;
 
-  //FAIRINO_HARDWARE_PUBLIC
-  //hardware_interface::CallbackReturn on_configure(const rclcpp_lifecycle::State &) override;
-
+  /// Setup the communication to the hardware and prepare for activation
   FAIRINO_HARDWARE_PUBLIC
-  hardware_interface::CallbackReturn on_activate(
+  hardware_interface::CallbackReturn on_configure(
     const rclcpp_lifecycle::State & previous_state) override;
 
-  FAIRINO_HARDWARE_PUBLIC
-  hardware_interface::CallbackReturn on_deactivate(
-    const rclcpp_lifecycle::State & previous_state) override;
-
+  /// Read-only states are exposed
   FAIRINO_HARDWARE_PUBLIC
   std::vector<hardware_interface::StateInterface::ConstSharedPtr> on_export_state_interfaces()
     override;
 
+  /// Write-only commands are exposed
   FAIRINO_HARDWARE_PUBLIC
   std::vector<hardware_interface::CommandInterface::SharedPtr> on_export_command_interfaces()
     override;
 
+  /// Hardware is enabled and ready to use
+  FAIRINO_HARDWARE_PUBLIC
+  hardware_interface::CallbackReturn on_activate(
+    const rclcpp_lifecycle::State & previous_state) override;
+
+  /// Get the current hardware inputs
   FAIRINO_HARDWARE_PUBLIC
   hardware_interface::return_type read(
     const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
+  /// Set the new hardware outputs
   FAIRINO_HARDWARE_PUBLIC
   hardware_interface::return_type write(
     const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
+  /// Hardware is disabled
+  FAIRINO_HARDWARE_PUBLIC
+  hardware_interface::CallbackReturn on_deactivate(
+    const rclcpp_lifecycle::State & previous_state) override;
+
+  /// Close communication and prepare for shutdown
+  FAIRINO_HARDWARE_PUBLIC
+  hardware_interface::CallbackReturn on_cleanup(
+    const rclcpp_lifecycle::State & previous_state) override;
+
 private:
   std::string controller_ip_;
-  std::string controller_port_;
   std::unique_ptr<FRRobot> fr_robot_;
 
   bool read_position_;
@@ -80,8 +93,11 @@ private:
   double joint_position_commands_[6];
   double joint_velocity_commands_[6];
   double joint_effort_commands_[6];
+
+  std::vector<hardware_interface::StateInterface::ConstSharedPtr> state_interfaces_;
+  std::vector<hardware_interface::CommandInterface::SharedPtr> command_interfaces_;
 };
 
 }  // namespace fairino_hardware
 
-#endif
+#endif  // FAIRINO_HARDWARE_INTERFACE_HPP_
