@@ -1,13 +1,13 @@
 moveit_setup_assistant_config:
   urdf:
     package: fairino_description
-    relative_path: urdf/fairino10_v6.urdf
+    relative_path: urdf/fairino10_v6/fairino10_v6.urdf.xacro
   srdf:
     relative_path: config/fairino10_v6_robot.srdf
   package_settings:
     author_name: litao
     author_email: litao@frtech.fr
-    generated_timestamp: 1721285546
+    generated_timestamp: 1792662705
   control_xacro:
     command:
       - position

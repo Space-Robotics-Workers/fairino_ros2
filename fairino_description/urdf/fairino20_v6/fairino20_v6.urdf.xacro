@@ -12,7 +12,7 @@
     default="$(find fairino20_v6_moveit2_config)/config/ros2_controllers.yaml" />
 
   <!-- Include required macros -->
-  <xacro:include filename="$(find fairino_description)/urdf/fairino20_v6/fairino20_v6.control.xacro" />
+  <xacro:include filename="$(find fairino_description)/urdf/fairino20_v6/fairino20_v6.ros2_control.xacro" />
   <xacro:include
     filename="$(find fairino_description)/urdf/fairino20_v6/fairino20_v6.description.xacro" />
   <xacro:include filename="$(find fairino_description)/urdf/fairino20_v6/fairino20_v6.gazebo.xacro" />
@@ -24,7 +24,7 @@
     <origin xyz="$(arg xyz)" rpy="$(arg rpy)" />
   </xacro:fairino20_v6_description>
 
-  <xacro:fairino20_v6_control prefix="$(arg prefix)" mode="$(arg mode)" />
+  <xacro:fairino20_v6_ros2_control prefix="$(arg prefix)" mode="$(arg mode)" />
 
   <xacro:property name="mode" value="$(arg mode)" /> <!-- Get arg as property for evaluation -->
   <xacro:if value="${mode == 'gazebo'}">
