@@ -22,6 +22,7 @@ namespace fairino_hardware
 {
 const std::string BUILD_VERSION = "v3.9.7";
 const std::string DEFAULT_IP = "192.168.58.2";
+const size_t NUM_JOINTS = 6;
 
 class FairinoHardwareInterface : public hardware_interface::SystemInterface
 {
@@ -37,16 +38,6 @@ public:
   FAIRINO_HARDWARE_PUBLIC
   hardware_interface::CallbackReturn on_configure(
     const rclcpp_lifecycle::State & previous_state) override;
-
-  /// Read-only states are exposed
-  FAIRINO_HARDWARE_PUBLIC
-  std::vector<hardware_interface::StateInterface::ConstSharedPtr> on_export_state_interfaces()
-    override;
-
-  /// Write-only commands are exposed
-  FAIRINO_HARDWARE_PUBLIC
-  std::vector<hardware_interface::CommandInterface::SharedPtr> on_export_command_interfaces()
-    override;
 
   /// Hardware is enabled and ready to use
   FAIRINO_HARDWARE_PUBLIC
@@ -79,6 +70,9 @@ public:
     const rclcpp_lifecycle::State & previous_state) override;
 
 private:
+  /// Get joint interfaces from parent, organize by type, set values to zero, and set read/write flags
+  bool setup_joint_interfaces();
+
   std::string controller_ip_;
   std::unique_ptr<FRRobot> fr_robot_;
 
@@ -91,17 +85,14 @@ private:
   bool write_velocity_;
   bool write_effort_;
 
-  double joint_position_states_[6];
-  double joint_velocity_states_[6];
-  double joint_acceleration_states_[6];
-  double joint_effort_states_[6];
+  std::vector<hardware_interface::StateInterface::SharedPtr> joint_position_states_;
+  std::vector<hardware_interface::StateInterface::SharedPtr> joint_velocity_states_;
+  std::vector<hardware_interface::StateInterface::SharedPtr> joint_acceleration_states_;
+  std::vector<hardware_interface::StateInterface::SharedPtr> joint_effort_states_;
 
-  double joint_position_commands_[6];
-  double joint_velocity_commands_[6];
-  double joint_effort_commands_[6];
-
-  std::vector<hardware_interface::StateInterface::ConstSharedPtr> state_interfaces_;
-  std::vector<hardware_interface::CommandInterface::SharedPtr> command_interfaces_;
+  std::vector<hardware_interface::CommandInterface::SharedPtr> joint_position_commands_;
+  std::vector<hardware_interface::CommandInterface::SharedPtr> joint_velocity_commands_;
+  std::vector<hardware_interface::CommandInterface::SharedPtr> joint_effort_commands_;
 };
 
 }  // namespace fairino_hardware
