@@ -98,14 +98,6 @@ hardware_interface::CallbackReturn FairinoHardwareInterface::on_configure(
     return hardware_interface::CallbackReturn::ERROR;
   }
 
-  // Switch to automatic mode
-  ret = fr_robot_->Mode(0);
-
-  if (ret != 0) {
-    RCLCPP_ERROR(get_logger(), "Failed to switch to automatic mode with error %d", ret);
-    return hardware_interface::CallbackReturn::ERROR;
-  }
-
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
