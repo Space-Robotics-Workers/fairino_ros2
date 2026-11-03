@@ -22,3 +22,4 @@ fairino20_controller:
       - position
     state_interfaces:
       - position
+    allow_nonzero_velocity_at_trajectory_end: true
