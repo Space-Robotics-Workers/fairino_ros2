@@ -278,7 +278,7 @@ hardware_interface::return_type FairinoHardwareInterface::read(
   // Read force torque sensor if requested
   if (read_fts_) {
     ForceTorque force_torque;
-    errno_t ret = fr_robot_->FT_GetForceTorqueOrigin(1, &force_torque);
+    errno_t ret = fr_robot_->FT_GetForceTorqueRCS(1, &force_torque);
 
     if (ret != 0) {
       RCLCPP_ERROR(get_logger(), "Failed to read FTS with error %d", ret);
