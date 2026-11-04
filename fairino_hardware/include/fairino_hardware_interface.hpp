@@ -4,9 +4,11 @@
 #define FAIRINO_HARDWARE_INTERFACE_HPP_
 
 // Standard library
+#include <string>
 #include <vector>
 
 // ROS2
+#include <hardware_interface/handle.hpp>
 #include <hardware_interface/hardware_info.hpp>
 #include <hardware_interface/system_interface.hpp>
 #include <hardware_interface/types/hardware_interface_return_values.hpp>
@@ -23,6 +25,9 @@ namespace fairino_hardware
 const std::string BUILD_VERSION = "v3.9.7";
 const std::string DEFAULT_IP = "192.168.58.2";
 const size_t NUM_JOINTS = 6;
+const std::vector<std::string> FTS_STATE_NAMES = {
+  "force.x", "force.y", "force.z", "torque.x", "torque.y", "torque.z",
+};
 
 class FairinoHardwareInterface : public hardware_interface::SystemInterface
 {
@@ -73,9 +78,14 @@ private:
   /// Get joint interfaces from parent, organize by type, set values to zero, and set read/write flags
   bool setup_joint_interfaces();
 
+  /// Get sensor interfaces from parent, organize by type, set values to zero, and set read flags
+  bool setup_sensor_interfaces();
+
+  // General variables
   std::string controller_ip_;
   std::unique_ptr<FRRobot> fr_robot_;
 
+  // Joint variables
   bool read_position_;
   bool read_velocity_;
   bool read_acceleration_;
@@ -93,6 +103,11 @@ private:
   std::vector<hardware_interface::CommandInterface::SharedPtr> joint_position_commands_;
   std::vector<hardware_interface::CommandInterface::SharedPtr> joint_velocity_commands_;
   std::vector<hardware_interface::CommandInterface::SharedPtr> joint_effort_commands_;
+
+  // Sensor variables
+  bool read_fts_;
+
+  std::vector<hardware_interface::StateInterface::SharedPtr> fts_states_;
 };
 
 }  // namespace fairino_hardware

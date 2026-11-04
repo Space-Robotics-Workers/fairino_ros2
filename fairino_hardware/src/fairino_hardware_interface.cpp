@@ -1,7 +1,9 @@
 // Copyright (c) 2026, Space Robotics Workers S.L.
 
 // Standard library
+#include <algorithm>
 #include <cmath>
+#include <cstddef>
 #include <memory>
 #include <string>
 #include <vector>
@@ -96,28 +98,36 @@ hardware_interface::CallbackReturn FairinoHardwareInterface::on_configure(
     return hardware_interface::CallbackReturn::ERROR;
   }
 
-  // Switch to automatic mode
-  ret = fr_robot_->Mode(0);
-
-  if (ret != 0) {
-    RCLCPP_ERROR(get_logger(), "Failed to switch to automatic mode with error %d", ret);
-    return hardware_interface::CallbackReturn::ERROR;
-  }
-
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
 hardware_interface::CallbackReturn FairinoHardwareInterface::on_activate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
-  // Setup joint interfaces after they have been exported
+  // Robot error return value
+  errno_t ret;
+
+  // Setup interfaces after they have been exported
   if (!setup_joint_interfaces()) {
     return hardware_interface::CallbackReturn::ERROR;
+  }
+  if (!setup_sensor_interfaces()) {
+    return hardware_interface::CallbackReturn::ERROR;
+  }
+
+  // Enable FTS if configured
+  if (read_fts_) {
+    ret = fr_robot_->FT_Activate(1);
+
+    if (ret != 0) {
+      RCLCPP_ERROR(get_logger(), "Failed to activate FTS with error %d", ret);
+      return hardware_interface::CallbackReturn::ERROR;
+    }
   }
 
   // Read initial joint configuration
   JointPos joint_positions;
-  errno_t ret = fr_robot_->GetActualJointPosDegree(0, &joint_positions);
+  ret = fr_robot_->GetActualJointPosDegree(0, &joint_positions);
 
   if (ret != 0) {
     RCLCPP_ERROR(get_logger(), "Failed to read initial joint positions with error %d", ret);
@@ -261,6 +271,33 @@ hardware_interface::return_type FairinoHardwareInterface::read(
           get_logger(), "Failed to set effort state value for joint '%s'",
           info_.joints[idx].name.c_str());
         return hardware_interface::return_type::ERROR;
+      }
+    }
+  }
+
+  // Read force torque sensor if requested
+  if (read_fts_) {
+    ForceTorque force_torque;
+    errno_t ret = fr_robot_->FT_GetForceTorqueRCS(1, &force_torque);
+
+    if (ret != 0) {
+      RCLCPP_ERROR(get_logger(), "Failed to read FTS with error %d", ret);
+      return hardware_interface::return_type::ERROR;
+    }
+
+    const std::vector<double> fts_values = {
+      force_torque.fx, force_torque.fy, force_torque.fz,
+      force_torque.tx, force_torque.ty, force_torque.tz,
+    };
+
+    for (size_t idx = 0; idx < FTS_STATE_NAMES.size(); ++idx) {
+      auto state_ptr = fts_states_[idx];
+      if (state_ptr) {
+        if (!state_ptr->set_value(fts_values[idx])) {
+          RCLCPP_ERROR(
+            get_logger(), "Failed to set FTS state value '%s'", FTS_STATE_NAMES[idx].c_str());
+          return hardware_interface::return_type::ERROR;
+        }
       }
     }
   }
@@ -437,6 +474,8 @@ hardware_interface::CallbackReturn FairinoHardwareInterface::on_cleanup(
   joint_velocity_commands_.clear();
   joint_effort_commands_.clear();
 
+  fts_states_.clear();
+
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
@@ -528,6 +567,56 @@ bool FairinoHardwareInterface::setup_joint_interfaces()
             get_logger(), "Failed to initialize command interface '%s'", command_name.c_str());
           return false;
         }
+      }
+    }
+  }
+
+  return true;
+}
+
+bool FairinoHardwareInterface::setup_sensor_interfaces()
+{
+  // Set all interface handles to null
+  fts_states_ = {FTS_STATE_NAMES.size(), nullptr};
+
+  // Set all read flags to false
+  read_fts_ = false;
+
+  // For each sensor
+  for (const auto & sensor : info_.sensors) {
+    // Sensor is an FTS if it has wrench names in its state interfaces
+    for (const auto & state : sensor.state_interfaces) {
+      bool is_fts = std::any_of(
+        FTS_STATE_NAMES.begin(), FTS_STATE_NAMES.end(),
+        [&state](const auto & wrench_name) { return state.name == wrench_name; });
+
+      if (is_fts) {
+        // For each state name
+        for (size_t idx = 0; idx < FTS_STATE_NAMES.size(); ++idx) {
+          // Assemble the full state name
+          const auto state_name = sensor.name + "/" + FTS_STATE_NAMES[idx];
+
+          // Find state interface in parent class
+          const auto state_iter = std::find_if(
+            sensor_states_.begin(), sensor_states_.end(), [&state_name](const auto & sensor_state) {
+              return sensor_state->get_name() == state_name;
+            });
+
+          // Store pointer to interface and set flag
+          if (state_iter != sensor_states_.end()) {
+            fts_states_[idx] = *state_iter;
+            read_fts_ = true;
+
+            if (!(*state_iter)->set_value(0.0)) {
+              RCLCPP_FATAL(
+                get_logger(), "Failed to initialize state interface '%s'", state_name.c_str());
+              return false;
+            }
+          }
+        }
+
+        // Only one FTS is expected
+        return true;
       }
     }
   }
